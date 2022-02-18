@@ -11,6 +11,7 @@ export AC_REPOSITORY_DIR="$HOME/app/workflow_data/tjrdzp35.isa/_appcircle_temp/R
 #export AC_REPOSITORY_DIR=""
 export AC_CACHE_LABEL="master/app-deps"
 export AC_TOKEN_ID="x"
+export ASPNETCORE_CALLBACK_URL="https://dev-api.appcircle.io/build/v1/callback"
 
 rm -rf $HOME/.gradle
 
