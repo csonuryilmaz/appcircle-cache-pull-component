@@ -17,10 +17,6 @@ def run_command_silent(command)
   exit $CHILD_STATUS.exitstatus unless system(command)
 end
 
-def install_deps_if_not_exist(tool)
-  run_command_silent("dpkg -s #{tool} > /dev/null 2>&1 || apt-get -y install #{tool} > /dev/null 2>&1")
-end
-
 ac_repository_path = get_env_variable('AC_REPOSITORY_DIR')
 ac_cache_label = get_env_variable('AC_CACHE_LABEL') || abort('Cache label path must be defined.')
 
@@ -30,8 +26,9 @@ ac_callback_url = get_env_variable('ASPNETCORE_CALLBACK_URL') ||
 
 signed_url_api = "#{ac_callback_url}?action=getCacheUrls"
 
-install_deps_if_not_exist('curl')
-install_deps_if_not_exist('unzip')
+# check dependencies
+run_command_silent('unzip -v |head -1')
+run_command_silent('curl --version |head -1')
 
 @cache = "ac_cache/#{ac_cache_label}"
 zipped = "ac_cache/#{ac_cache_label.gsub('/', '_')}.zip"
