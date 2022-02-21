@@ -1,6 +1,7 @@
 require 'English'
 require 'net/http'
 require 'json'
+require 'digest'
 
 def get_env_variable(key)
   return nil if ENV[key].nil? || ENV[key].strip.empty?
@@ -10,7 +11,7 @@ end
 
 def run_command(command)
   unless system(command)
-    puts "Unexpected exit with #{exit $CHILD_STATUS.exitstatus} code. Check logs for details."
+    puts "Unexpected exit with code #{$CHILD_STATUS.exitstatus}. Check logs for details."
     exit 0
   end
 end
@@ -38,7 +39,7 @@ signed_url_api = "#{ac_callback_url}?action=getCacheUrls"
 run_command('unzip -v |head -1')
 run_command('curl --version |head -1')
 
-@cache = "ac_cache/#{ac_cache_label}"
+cache = "ac_cache/#{ac_cache_label}"
 zipped = "ac_cache/#{ac_cache_label.gsub('/', '_')}.zip"
 
 puts 'Inputs:'
@@ -46,8 +47,8 @@ puts ac_cache_label
 puts ac_repository_path
 puts '------'
 
-system("rm -rf #{@cache}")
-system("mkdir -p #{@cache}")
+system("rm -rf #{cache}")
+system("mkdir -p #{cache}")
 
 unless ac_token_id.empty?
   puts ''
@@ -70,13 +71,18 @@ end
 exit 0 unless File.size?(zipped)
 exit 0 if system("head -1 #{zipped} |grep -i -q NoSuchKey && rm -f #{zipped}")
 
+md5sum = Digest::MD5.file(zipped).hexdigest
+puts "MD5: #{md5sum}"
+File.open("#{zipped}.md5", 'a') do |f|
+  f.puts md5sum.to_s
+end
 run_command_with_log("unzip -qq #{zipped}")
 
-Dir.glob("#{@cache}/*.zip", File::FNM_DOTMATCH).each do |zip_file|
+Dir.glob("#{cache}/*.zip", File::FNM_DOTMATCH).each do |zip_file|
   run_command_with_log("unzip -qq #{zip_file} -d /")
 end
 
-Dir.glob("#{@cache}/repository/*.zip", File::FNM_DOTMATCH).each do |zip_file|
+Dir.glob("#{cache}/repository/*.zip", File::FNM_DOTMATCH).each do |zip_file|
   if ac_repository_path
     run_command_with_log("unzip -qq -u #{zip_file} -d #{ac_repository_path}")
   else
