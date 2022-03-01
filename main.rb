@@ -52,6 +52,7 @@ puts '-----------'
 
 env_dirs = Hash.new('')
 ENV.each_pair do |k, v|
+  next unless k.start_with?('AC_')
   next if v.include?('//') || v.include?(':')
 
   env_dirs[k] = v if File.directory?(v) || %r{^(.+)/([^/]+)$} =~ v
