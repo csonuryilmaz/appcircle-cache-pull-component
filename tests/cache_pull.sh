@@ -7,8 +7,8 @@ testApp="https://github.com/csonuryilmaz/TextPad.git"
 export GRADLE_OPTS="-Dorg.gradle.daemon=false"
 
 # Workflow step input variables (component.yml>inputs)
-export AC_REPOSITORY_DIR="$HOME/app/workflow_data/tjrdzp35.isa/_appcircle_temp/Repository"
-#export AC_REPOSITORY_DIR=""
+export AC_REPOSITORY_DIR="$HOME/app/workflow_data/xjrdzp35.isa/_appcircle_temp/Repository"
+export AC_TEMP_DIR="$HOME/app/workflow_data/ymwyp2xm.xje/_appcircle_temp"
 export AC_CACHE_LABEL="8a7719b1-05fb-41c3-96e7-c764fdb036e1/master/app-deps"
 export AC_TOKEN_ID="x"
 export AC_CALLBACK_URL="https://dev-api.appcircle.io/build/v1/callback"
@@ -29,7 +29,8 @@ fi
 START_TIME=$SECONDS
 echo ""
 echo "@@[section:begin] Step started: Cache Pull"
-ruby main.rb
+#ruby main.rb
+rdebug-ide main.rb
 echo "@@[section:end] Step completed: Cache Pull"
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "took $ELAPSED_TIME s"
